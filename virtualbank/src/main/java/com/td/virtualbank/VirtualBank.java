@@ -20,19 +20,45 @@ import java.util.Map;
 
 public class VirtualBank {
 
-    private String auth;
-    private String baseURL = "https://botsfinancial.com/api/";
-    private  static VirtualBank vb = null;
+    private final String auth;
+    private final String baseURL;
+    private static VirtualBank vb = null;
 
-    //account id
-    //7244c741-cb43-40b9-9729-57a05b170222
-    private VirtualBank(String auth) {
+    private VirtualBank(String auth, String baseURL) {
         this.auth = auth;
+        this.baseURL = baseURL;
     }
 
+    /**
+     * Creates a new Virtual Bank Instance.
+     *
+     * @param auth
+     *     The authorization token to authenticate with BOTS Financial API.
+     * @param context
+     *     Context used to obtain the base URL. The consumer may override {@link R.string.virtual_bank_url} to change
+     *     the base url.
+     *
+     * @return The Virtual Bank Instance.
+     */
+    public static VirtualBank getBank(String auth, Context context) {
+        if (vb == null) {
+            vb = new VirtualBank(auth, context.getString(R.string.virtual_bank_url));
+        }
+        return vb;
+    }
+
+    /**
+     * Creates a Virtual Bank instance using an auth token and default production BOTS Financial Base URL.
+     *
+     * @param auth
+     *     The authorization token to authenticate with BOTS Financial API.
+     *
+     * @return The Virtual Bank Instance.
+     */
+    @Deprecated
     public static VirtualBank getBank(String auth) {
         if (vb == null) {
-            vb = new VirtualBank(auth);
+            vb = new VirtualBank(auth, "https://botsfinancial.com/api/");
         }
         return vb;
     }
@@ -103,16 +129,17 @@ public class VirtualBank {
         queue.add(jsonRequest);
     }
 
-    public void postTransfer(Context context, String fromAccountId, String toAccountId, Double amount, String currency, VirtualBankPostTransferRequest VBResponse) throws JSONException {
+    public void postTransfer(Context context, String fromAccountId, String toAccountId, Double amount, String currency,
+        VirtualBankPostTransferRequest VBResponse) throws JSONException {
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = baseURL + "transfers";
         JSONObject body = new JSONObject();
         body.put("amount", amount);
         body.put("currency", currency);
         body.put("fromAccountID", fromAccountId);
-        body.put("toAccountID",toAccountId);
+        body.put("toAccountID", toAccountId);
         body.put("receipt", "string");
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(url,body,VBResponse,VBResponse) {
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(url, body, VBResponse, VBResponse) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
@@ -124,7 +151,8 @@ public class VirtualBank {
         queue.add(jsonRequest);
     }
 
-    public void getCustomerCreditCardAccounts(Context context, String CustomerId, VirtualBankGetCustomerCreditCardAccountsRequest VBResponse) {
+    public void getCustomerCreditCardAccounts(Context context, String CustomerId,
+        VirtualBankGetCustomerCreditCardAccountsRequest VBResponse) {
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = baseURL + "customers/" + CustomerId + "/accounts";
         JsonObjectRequest jsonRequest = new JsonObjectRequest(url, null, VBResponse, VBResponse) {
@@ -139,7 +167,8 @@ public class VirtualBank {
         queue.add(jsonRequest);
     }
 
-    public void getCustomerBankAccounts(Context context, String CustomerId, VirtualBankGetCustomerBankAccountsRequest VBResponse) {
+    public void getCustomerBankAccounts(Context context, String CustomerId,
+        VirtualBankGetCustomerBankAccountsRequest VBResponse) {
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = baseURL + "customers/" + CustomerId + "/accounts";
         JsonObjectRequest jsonRequest = new JsonObjectRequest(url, null, VBResponse, VBResponse) {
@@ -154,7 +183,8 @@ public class VirtualBank {
         queue.add(jsonRequest);
     }
 
-    public void getCustomerAccounts(Context context, String CustomerId, VirtualBankGetCustomerAccountsRequest VBResponse) {
+    public void getCustomerAccounts(Context context, String CustomerId,
+        VirtualBankGetCustomerAccountsRequest VBResponse) {
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = baseURL + "customers/" + CustomerId + "/accounts";
         JsonObjectRequest jsonRequest = new JsonObjectRequest(url, null, VBResponse, VBResponse) {
@@ -214,7 +244,8 @@ public class VirtualBank {
         queue.add(jsonRequest);
     }
 
-    public void getCustomerTransactions(Context context, String id, VirtualBankGetCustomerTransactionsRequest VBResponse) {
+    public void getCustomerTransactions(Context context, String id,
+        VirtualBankGetCustomerTransactionsRequest VBResponse) {
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = baseURL + "customers/" + id + "/transactions";
         JsonObjectRequest jsonRequest = new JsonObjectRequest(url, null, VBResponse, VBResponse) {
@@ -259,7 +290,8 @@ public class VirtualBank {
         queue.add(jsonRequest);
     }
 
-    public void patchAppAccount(Context context, Double balance, VirtualBankPatchAppAccountRequest VBResponse) throws JSONException {
+    public void patchAppAccount(Context context, Double balance, VirtualBankPatchAppAccountRequest VBResponse)
+        throws JSONException {
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = baseURL + "accounts/self";
         JSONObject json = new JSONObject();
@@ -276,12 +308,14 @@ public class VirtualBank {
         queue.add(jsonRequest);
     }
 
-    public void putTransactionTags(Context context, String id, String[] tag, VirtualBankPutTransactionTagsRequest VBResponse) throws JSONException {
+    public void putTransactionTags(Context context, String id, String[] tag,
+        VirtualBankPutTransactionTagsRequest VBResponse) throws JSONException {
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = baseURL + "transactions/" + id + "/tags";
         Gson gson = new Gson();
 
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.PUT, url, new JSONObject(String.valueOf(new JSONArray(tag))), VBResponse, VBResponse) {
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.PUT, url,
+            new JSONObject(String.valueOf(new JSONArray(tag))), VBResponse, VBResponse) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
