@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">virtualBank</string>
+    <string name="virtual_bank_url">https://botsfinancial.com/api/</string>
 </resources>
