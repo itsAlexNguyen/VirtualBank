@@ -20,8 +20,8 @@ import java.util.Map;
 
 public class VirtualBank {
 
-    private String auth = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJDQlAiLCJ0ZWFtX2lkIjoidGVzdFRlYW1JZCIsImV4cCI6OTIyMzM3MjAzNjg1NDc3NSwiYXBwX2lkIjoidGVzdEFwcElkIn0.o53TISzOUq0T1dc96IiEc8rreexYLCrdI3HunhtPvJ4";
-    private String baseURL = "https://dev.botsfinancial.com/api/";
+    private String auth;
+    private String baseURL = "https://botsfinancial.com/api/";
     private  static VirtualBank vb = null;
 
     //account id
